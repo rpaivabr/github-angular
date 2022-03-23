@@ -1,27 +1,52 @@
-# GithubAngular
+# Desafio Angular GitHub API
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 13.2.6.
+Sabemos a importância da aplicação se comunicar com APIs externas, muitas delas gratuitas, trazendo benefícios e informação adicional ao projeto.
 
-## Development server
+Usando como referência nossos estudos anteriores com o Weather App (utilizando o WeatherAPI), neste projeto vamos criar uma aplicação que busca por um usuário do github, utilizando o GitHub API, e mostra detalhes sobre o perfil deste usuário.
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
+Precisa mostrar na tela: (url: https://api.github.com/users/<nome_do_usuario>)
 
-## Code scaffolding
+- Imagem do avatar (avatar_url)
+- Nome de usuário (login)
+- Nome (name)
+- Link para página do github (html_url)
+- Quantidade de seguidores (followers)
+- Quantidade de repositórios públicos (public_repos)
+- Trazer 4 nome de repositórios (repos_url) utilizando algum critério de busca de sua preferência (mais recentes, mais estrelados, mais forkados)
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+## Restrições
 
-## Build
+- [ ] Somente utilizar um único componente (app.component.ts)
+- [ ] Utilizar estilo css próprio e pelo menos um componente do [Bootstrap](https://getbootstrap.com/) (já está importado o css no index.html)
+- [ ] Utilizar metodo fetch (asíncrono) para requisições HTTP
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory.
+## Features
 
-## Running unit tests
+- [ ] Poder inserir um username do github para pesquisar
+- [ ] Clicar em um botão de busca (Search) para ter acesso a informação sobre o username
+- [ ] Ver o avatar, username, nome, quantidade de seguidores e repositórios públicos do username pesquisado
+- [ ] Ver os 4 repositórios mais recentes
+- [ ] Receber uma notificação (alerta) se o usuário for inválido / inexistente
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
+## Extra Features
 
-## Running end-to-end tests
+- [ ] Mostrar uma lista de usuários pesquisados (ordenação por critério de sua preferência)
+- [ ] Incluir link para perfil do usuário e dos repositórios
+- [ ] Mudar filtro dos top 4 repositórios (updated_at / stargazers_count / forks_count)
+- [ ] Persistir lista de usuários no último acesso (utilizando local storage por exemplo)
 
-Run `ng e2e` to execute the end-to-end tests via a platform of your choice. To use this command, you need to first add a package that implements end-to-end testing capabilities.
+## Links Úteis
 
-## Further help
+To get the data you need to communicate with GitHub API. you can either
 
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.io/cli) page.
+- [Fetch API](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API/Using_Fetch)
+- [API Github User Example](https://api.github.com/users/rpaivabr)
+- [API Github User Repositories Example](https://api.github.com/users/rpaivabr/repos)
+- [Bootstrap Button Component](https://getbootstrap.com/docs/5.1/components/buttons/)
+- [Bootstrap Alert Component](https://getbootstrap.com/docs/5.1/components/alerts/)
+
+To get data from API you can check in javascript
+
+## Projeto para Referência
+
+- [Stackblitz weather-angular](https://stackblitz.com/edit/angular-ivy-fepuhr?file=src%2Fapp%2Fapp.component.ts)
