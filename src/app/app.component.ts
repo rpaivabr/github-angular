@@ -1,6 +1,8 @@
+import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
+import { map, mergeMap, Observable } from 'rxjs';
 
-type Profile = {
+export type Profile = {
   id: number;
   login: string;
   name: string;
@@ -9,10 +11,10 @@ type Profile = {
   avatar_url: string;
   html_url: string;
   repos_url: string;
-  repos: Repo[];
+  repos?: Repo[];
 }
 
-type Repo = {
+export type Repo = {
   id: number;
   name: string;
   html_url: string;
@@ -22,10 +24,6 @@ type Repo = {
   forks_count: number;
 }
 
-type SortHandler = {
-  [key: string]: (a: Repo, b: Repo) => number;
-}
-
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
@@ -33,28 +31,32 @@ type SortHandler = {
 })
 export class AppComponent implements OnInit {
 
+  title: string = 'Github Profiles';
   profiles: Profile[] = [];
   showError: boolean = false;
+
+  constructor(private httpClient: HttpClient) {}
 
   ngOnInit(): void {
     this.getStoredProfiles();
   }
 
   searchProfile(value: string): void {
-    const usernames = this.profiles.map(profile => profile.login);
-    const isUsernameExists = usernames.includes(value)
+    // validate if user already exists in profiles list
+    const isUsenameExists = this.profiles
+      .some(profile => profile.login.toLowerCase() === value.toLowerCase());
+    if (isUsenameExists) return;
 
-    if (isUsernameExists) return;
-
-    this.getProfileWithRepos(value)
-      .then(profile => {
+    this.getProfileWithRepos(value).subscribe({
+      next: (profile: Profile) => {
         this.profiles.unshift(profile);
         localStorage.setItem('githubpagesdata', JSON.stringify(this.profiles));
-      })
-      .catch(err => {
+      },
+      error: (err) => {
         console.error(err);
         this.showError = true;
-      })
+      }
+    })
   }
 
   clearProfiles(): void {
@@ -66,26 +68,6 @@ export class AppComponent implements OnInit {
     this.showError = false;
   }
 
-  handleSubmit(event: Event): void {
-    event.preventDefault();
-  }
-
-  sortRepos(event: Event, index: number, type: string): void {
-    event.preventDefault();
-
-    const sortHandler: SortHandler = {
-      'name_asc': (a: Repo, b: Repo) => {
-        return a.name.localeCompare(b.name);
-      },
-      'updated_desc': (a: Repo, b: Repo) => {
-        return new Date(b.updated_at).getTime() - new Date(a.updated_at).getTime();
-      }
-    }
-
-    this.profiles[index].repos = this.profiles[index].repos
-      .sort(sortHandler[type]);
-  }
-
   private getStoredProfiles(): void {
     const storedProfiles = localStorage.getItem('githubpagesdata')
     if (storedProfiles) {
@@ -93,16 +75,11 @@ export class AppComponent implements OnInit {
     }
   }
 
-  private async getProfileWithRepos(username: string): Promise<Profile> {
-    const profileResponse = await fetch(`https://api.github.com/users/${username}`)
-    const profile: Profile = await profileResponse.json();
-
-    const reposResponse = await fetch(profile.repos_url);
-    const repos: Repo[] = await reposResponse.json()
-
-    profile.repos = repos;
-
-    return profile;
+  private getProfileWithRepos(username: string): Observable<any> {
+    return this.httpClient.get<Profile>(`https://api.github.com/users/${username}`).pipe(
+      mergeMap(profile => this.httpClient.get<Repo[]>(profile.repos_url).pipe(
+        map(repos => ({ ...profile, repos }))
+      ))
+    )
   }
-
 }

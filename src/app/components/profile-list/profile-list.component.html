@@ -1,0 +1,11 @@
+<div class="container d-flex flex-wrap">
+  <app-alert class="w-100" type="danger"
+    [show]="showError"
+    (dismiss)="dismiss()"
+  ></app-alert>
+
+  <app-profile-card class="w-100"
+    *ngFor="let profile of profiles"
+    [profile]="profile"
+  ></app-profile-card>
+</div>
