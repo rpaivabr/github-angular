@@ -75,7 +75,7 @@ export class AppComponent implements OnInit {
     }
   }
 
-  private getProfileWithRepos(username: string): Observable<any> {
+  private getProfileWithRepos(username: string): Observable<Profile> {
     return this.httpClient.get<Profile>(`https://api.github.com/users/${username}`).pipe(
       mergeMap(profile => this.httpClient.get<Repo[]>(profile.repos_url).pipe(
         map(repos => ({ ...profile, repos }))
